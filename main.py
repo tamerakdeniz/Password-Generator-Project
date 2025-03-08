@@ -1,12 +1,8 @@
+import os
 import random
-letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+from datetime import datetime
 
-print("Welcome to the PyPassword Generator!")
-nr_letters = int(input("How many letters would you like in your password?\n"))
-nr_symbols = int(input(f"How many symbols would you like?\n"))
-nr_numbers = int(input(f"How many numbers would you like?\n"))
+from characters import letters, numbers, symbols
 
 # Easy Level
 # password = ""
@@ -22,23 +18,45 @@ nr_numbers = int(input(f"How many numbers would you like?\n"))
 # print(password)
 
 # Hard level
-password_list = []
-for char in range(0, nr_letters):
-    password_list.append(random.choice(letters))
+def generate_password():
+    print("Welcome to the PyPassword Generator!")
+    password_for = input("What is this password for? (e.g., Gmail, Netflix, etc.): ")
+    nr_letters = int(input("How many letters would you like in your password?\n"))
+    nr_symbols = int(input(f"How many symbols would you like?\n"))
+    nr_numbers = int(input(f"How many numbers would you like?\n"))
 
-for char in range(0, nr_symbols):
-    password_list.append(random.choice(symbols))
+    password_list = []
+    for char in range(0, nr_letters):
+        password_list.append(random.choice(letters))
 
-for char in range(0, nr_numbers):
-    password_list.append(random.choice(numbers))
+    for char in range(0, nr_symbols):
+        password_list.append(random.choice(symbols))
 
-print(password_list)
-random.shuffle(password_list)
-print(password_list)
+    for char in range(0, nr_numbers):
+        password_list.append(random.choice(numbers))
 
-password = ""
-for char in password_list:
-    password += char
+    random.shuffle(password_list)
 
-print(f"Your password is: {password}")
+    password = ""
+    for char in password_list:
+        password += char
+        
+    return password_for, password
+
+def save_password(password_for, password):
+    # Define the specific path for password.txt
+    file_path = os.path.join(os.path.dirname(__file__), "password.txt")
+    
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(file_path, "a") as file:
+        file.write(f"[{timestamp}] {password_for}: {password}\n")
+
+def main():
+    password_for, password = generate_password()
+    print(f"\nYour password for {password_for} is: {password}")
+    save_password(password_for, password)
+    print("Password has been saved to password.txt")
+
+if __name__ == "__main__":
+    main()
 
